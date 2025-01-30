@@ -23,6 +23,7 @@ class User(db.Model):
     password = db.Column(db.String(200), nullable=False)
     role = db.Column(db.String(20), nullable=False)  # 'admin' or 'employee'
     company_id = db.Column(db.Integer, db.ForeignKey('company.id'), nullable=False)
+    department = db.Column(db.String(100), nullable=True)
 
 class Consent(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -84,15 +85,32 @@ def register():
 
     return render_template('register.html', sector=sector)
 
+@app.route('/check_company_exists/<company_name>', methods=['GET'])
+def check_company_exists(company_name):
+    # Buscar la empresa en la base de datos (sin importar mayúsculas o minúsculas)
+    company = Company.query.filter(db.func.lower(Company.name) == db.func.lower(company_name)).first()
+    
+    # Retornar un JSON con la información de si la empresa existe o no
+    if company:
+        return {"exists": True}
+    else:
+        return {"exists": False}
+
+
 @app.route('/register_employee', methods=['GET', 'POST'])
 def register_employee():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-        company_id = request.form['company_id']
+        company_name = request.form['company_name']
+        department = request.form['department']
 
         # Verifica que la empresa exista
-        company = Company.query.get_or_404(company_id)
+        company = Company.query.filter(db.func.lower(Company.name) == db.func.lower(company_name)).first()
+
+        if not company:
+            flash("Company does not exist.", "danger")
+            return redirect(url_for('register_employee'))
         print(f"Empresa encontrada: {company.name}")
 
         # Validation empty fields
@@ -108,7 +126,8 @@ def register_employee():
 
         # Crea el usuario
         hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
-        new_user = User(email=email, password=hashed_password, role='employee', company_id=company.id)
+        new_user = User(email=email, password=hashed_password, role='employee', company_id=company.id,
+        department=department)
         db.session.add(new_user)
         try:
           db.session.commit()
