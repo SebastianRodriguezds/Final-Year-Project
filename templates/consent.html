@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consent Form</title>
+</head>
+<body>
+  <div class="privacy-policy">
+    <h2>Privacy Policy and Consent</h2>
+    <p>Welcome to our platform. We are committed to supporting your mental well-being. To be transparent, we want to inform you about the data we collect and how it will be used to assist you in managing your work-life balance and overall mental health.</p>
+
+    <h3>1. Information We Collect</h3>
+    <ul>
+        <li><strong>Work Hours:</strong> We track your work start and end times to help you maintain a healthy work schedule and prevent burnout.</li>
+        <li><strong>Activity Logs:</strong> We monitor tool and application usage to identify stress points or signs of overwork and offer timely interventions.</li>
+        <li><strong>Productivity Scores:</strong> These are measured to understand your workload and ensure you're not overwhelmed, while helping you improve your efficiency without compromising your well-being.</li>
+        <li><strong>Keystroke Monitoring:</strong> This is solely for statistical purposes and helps track periods of intense activity or prolonged stress, so we can suggest breaks or mental health resources.</li>
+        <li><strong>Screen Time:</strong> We analyze the time you spend on screen to encourage healthier habits and ensure you're taking regular breaks to prevent digital fatigue.</li>
+        <li><strong>Email Analysis:</strong> We track email volume and response times to identify when you might be overburdened, providing support or reminders to prioritize your mental health.</li>
+    </ul>
+
+    <h3>2. How We Use This Information</h3>
+    <p>🔹 To optimize your work-life balance by tracking work hours and providing reminders or suggestions for regular breaks, improving your mental well-being.</p>
+    <p>🔹 To help identify signs of stress or burnout by monitoring work patterns and offering personalized recommendations for managing your workload.</p>
+    <p>🔹 To ensure that you are not overwhelmed with tasks and to suggest ways to improve your productivity without affecting your mental health.</p>
+    <p>🔹 To support your mental health by analyzing work patterns and offering resources or reminders to take care of your well-being (e.g., mindfulness tips, relaxation exercises).</p>
+
+    <h3>3. Security and Anonymization</h3>
+    <p>🔒 All data is stored securely and is only shared with authorized personnel, with your well-being as the top priority.</p>
+    <p>🔒 Some data is analyzed anonymously and in aggregate to ensure that no personal or identifying information is used for mental health support.</p>
+    <p>🔒 You have full control over what information you share, and can modify your preferences at any time to ensure your privacy and comfort.</p>
+
+    <h3>4. User Rights</h3>
+    <p>✔️ You can request access to your data at any time and review how it’s being used to support your mental health.</p>
+    <p>✔️ You have the right to modify or withdraw your consent at any time, allowing you to maintain control over your mental well-being and the data we collect.</p>
+    <p>✔️ For additional support, mental health resources, or if you have any concerns, feel free to contact the Human Resources department.</p>
+</div>
+
+    <h2>Consent for Data Collection</h2>
+    <p>Please review the metrics that will be tracked and provide your consent. Your participation will help us offer better support and personalized recommendations to improve your mental health and well-being.</p>
+    
+    <form method="POST">
+      {% for metric in available_metrics %}
+          <label>
+              <input type="checkbox" name="metrics" value="{{ metric }}" 
+                  {% if existing_consent and metric in existing_consent.metrics.split(',') %}checked{% endif %}>
+              <strong>{{ metric.replace('_', ' ').title() }}</strong> - 
+              {% if metric == "work_hours" %}
+                  Tracks your working hours (start and end time) to help you maintain a balanced work schedule and avoid overworking.
+              {% elif metric == "activity_logs" %}
+                  Monitors your interactions with tools and applications to identify stress points and offer helpful reminders or breaks.
+              {% elif metric == "productivity_scores" %}
+                  Assesses your productivity based on completed tasks to prevent overload and suggest ways to optimize your work without compromising your mental health.
+              {% elif metric == "keystroke_monitoring" %}
+                  Tracks typing activity to detect periods of high stress, helping us suggest mental health resources or breaks when needed.
+              {% elif metric == "screen_time" %}
+                  Monitors your screen time to encourage healthy work habits and remind you to take necessary breaks to protect your well-being.
+              {% elif metric == "email_analysis" %}
+                  Analyzes the volume and response times of your emails to help avoid excessive work pressure and offer support for managing your workload.
+              {% endif %}
+          </label><br>
+      {% endfor %}
+      
+      <br>
+      <button type="submit" name="accept">Accept</button>
+      <button type="submit" name="decline">Decline</button>
+  </form>
+  
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+</head>
+<body>
+    <h1>Register a New Company</h1>
+    <form action="{{ url_for('register') }}" method="POST">
+        <label for="name">Company Name:</label>
+        <input type="text" name="name" required>
+        <br>
+        <label for="sector">Sector:</label>
+        <input type="text" name="sector" value="{{ sector }}" readonly required>  <!-- El sector es prellenado y solo lectura -->
+        <br>
+        <label for="number_employees">Number of Employees:</label>
+        <input type="number" name="number_employees" required>
+        <br>
+        <label for="type_subscription">Subscription Plan:</label>
+        <select name="type_subscription">
+            <option value="Basic">Basic</option>
+            <option value="Standard">Standard</option>
+            <option value="Premium">Premium</option>
+        </select>
+        <br>
+        <label for="email">Admin Email:</label>
+        <input id="email" type="email" name="email" required>
+        <br>
+        <label for="password">Admin Password:</label>
+        <input id="password" type="password" name="password" required>
+        <br>
+        <br>
+        <label for="confirm_password">Confirm Password:</label>
+        <input id="confirm_password" type="password" name="confirm_password" required>
+        <br>
+        <button type="submit">Register</button>
+    </form>
+    <p>
+        <a href="{{ url_for('index') }}">Back to home</a>
+    </p>
+</body>
+<script>
+    function validateForm(){
+        let email = document.getElementById("email").value;
+        let password = document.getElementById("password").value;
+        let confirm_password = document.getElementById("confirm_password").value;
+
+        // Verificar que los campos no estén vacíos
+        if (email === "" || password === "" || confirm_password === ""){
+            alert("Please fill in all fields");
+            return false;
+        }
+
+        // Verificar que las contraseñas coincidan
+        if (password !== confirm_password){
+            alert("Passwords do not match.");
+            return false;
+        }
+
+        // Verificar que la longitud de la contraseña sea al menos 8 caracteres
+        if (password.length < 8){
+            alert("Password must be at least 8 characters long.");
+            return false;
+        }
+
+        // Validación extra para el email con expresión regular
+        let emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+        if (!emailPattern.test(email)) {
+            alert("Please enter a valid email address.");
+            return false;
+        }
+
+        return true;
+    }   
+</script>
+</html>

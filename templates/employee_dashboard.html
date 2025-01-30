@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Dashboard</title>
+</head>
+<body>
+    <nav>
+        <!-- Otros enlaces de navegación -->
+        <a href="{{ url_for('index') }}" class="logout-button">Logout</a>
+    </nav>
+    <h1>Welcome, Employee!</h1>
+    <p>You're part of the company: {{ company.name }}</p>
+    <p>Sector: {{ company.sector }}</p>
+    <p>Number of Employees: {{ company.number_employees }}</p>
+    <p>Subscription Plan: {{ company.type_subscription }}</p>
+    <p><a href="{{ url_for('index') }}">Back to Home</a></p>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Employee</title>
+</head>
+<body>
+    <h1>Register a New Employee</h1>
+    <form action="{{ url_for('register_employee') }}" method="POST">
+        <label for="email">Employee Email:</label>
+        <input type="email" id="email" name="email" required>
+        <br>
+        <label for="password">Employee Password:</label>
+        <input type="password" id="password" name="password" required>
+        <br>
+        <label for="company_id">Select Company:</label>
+        <select name="company_id" required>
+            {% for company in companies %}
+                <option value="{{ company.id }}">{{ company.name }}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <button type="submit">Register Employee</button>
+    </form>
+    
+
+    <script>
+        function validateForm(){
+            let email = document.getElementById("email").value;
+            let password = document.getElementById("password").value;
+            let confirm_password = document.getElementById("confirm_password").value;
+            let companyName = document.getElementById("company_name").value;
+            let numberEmployees = document.getElementById("number_employees").value;
+
+            // Verificar que todos los campos estén llenos
+            if (email === "" || password === "" || confirm_password === "" || companyName === "" || numberEmployees === ""){
+                alert("Please fill in all fields.");
+                return false;
+            }
+
+            // Verificar que las contraseñas coincidan
+            if (password !== confirm_password){
+                alert("Passwords do not match.");
+                return false;
+            }
+
+            // Verificar que la longitud de la contraseña sea al menos 8 caracteres
+            if (password.length < 8){
+                alert("Password must be at least 8 characters long.");
+                return false;
+            }
+
+            // Validación de email con expresión regular
+            let emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+            if (!emailPattern.test(email)) {
+                alert("Please enter a valid email address.");
+                return false;
+            }
+
+            // Validar que el número de empleados sea un número positivo
+            if (numberEmployees <= 0){
+                alert("Number of employees must be a positive integer.");
+                return false;
+            }
+
+            return true;
+        }
+    </script>    
+</body>
+</html>

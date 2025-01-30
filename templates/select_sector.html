@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Sector</title>
+</head>
+<body>
+    <h1>Select the sector for your company</h1>
+    <form action="{{ url_for('select_sector') }}" method="POST">
+        <label for="sector">Sector:</label>
+        <select name="sector" required>
+            <option value="Technology">Technology</option>
+            <option value="Healthcare">Healthcare</option>
+            <option value="Finance">Finance</option>
+            <option value="Retail">Retail</option>
+            <!-- Agregar más sectores según sea necesario -->
+        </select>
+        <br><br>
+        <button type="submit">Next</button>
+    </form>
+</body>
+</html>

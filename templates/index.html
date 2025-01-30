@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome</title>
+</head>
+<body>
+    <h1>Welcome to the Company Portal</h1>
+    <p>
+        <a href="{{ url_for('select_sector') }}">Register a new company</a>
+        <br>
+        <a href="{{ url_for('login') }}">Login</a>
+        <br>
+        <!-- Botón para registro de empleado -->
+        <a href="{{ url_for('register_employee') }}">
+            Register as Employee
+        </a>
+    </p>
+</body>
+</html>
