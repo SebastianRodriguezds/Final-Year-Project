@@ -1,7 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash,jsonify, session
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 import re
+from data_analysis import get_average_metrics_for_month
+from datetime import datetime
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'  # Asegúrate de que la ruta a tu DB sea correcta
@@ -172,8 +175,14 @@ def login():
                 else:
                     flash("User does not have an associated company.", "danger")
                     return redirect(url_for('login'))
+        else:
+            # Aquí agregas el mensaje de alerta si la contraseña es incorrecta
+            flash("Incorrect email or password. Please try again.", "danger")
 
     return render_template('login.html')
+
+
+
 
 @app.route('/employee_dashboard/<int:company_id>')
 def employee_dashboard(company_id):
@@ -181,10 +190,37 @@ def employee_dashboard(company_id):
     company = Company.query.get_or_404(company_id)
     return render_template('employee_dashboard.html', company=company)
 
-@app.route('/dashboard/<int:company_id>')
+
+
+@app.route('/dashboard/<int:company_id>', methods=['GET', 'POST'])
 def dashboard(company_id):
     company = Company.query.get_or_404(company_id)
-    return render_template('dashboard.html', company=company)
+    
+    # Obtener el mes seleccionado desde el formulario o usar el mes actual por defecto
+    selected_date = request.form.get('selected_date', datetime.now().strftime('%Y-%m'))
+    
+    # Llamar a la función para analizar los datos y obtener las métricas del mes seleccionado
+    avg_metrics = get_average_metrics_for_month(selected_date)
+    
+    # Si no hay métricas disponibles, se muestra un mensaje
+    if avg_metrics.empty:
+        department_metrics = []
+    else:
+        department_metrics = avg_metrics.to_dict(orient='records')
+    
+    return render_template('dashboard.html', company=company, department_metrics=department_metrics, selected_date=selected_date)
+
+
+@app.route('/update_metrics', methods=['POST'])
+def update_metrics():
+    selected_date = request.form['selected_date']
+    print(f"Fecha seleccionada: {selected_date}")  # Verifica la fecha recibida
+    avg_metrics = get_average_metrics_for_month(selected_date)
+    department_metrics = avg_metrics.to_dict(orient='records')
+    print(f"Acá están las métricas: {avg_metrics}")  # Verifica si las métricas están correctas
+    return jsonify(department_metrics)  # Devolver como JSON
+
+
 
 #Rute to the consent
 @app.route('/consent/<int:user_id>', methods=['GET', 'POST'])
