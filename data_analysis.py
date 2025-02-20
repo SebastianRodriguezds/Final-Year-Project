@@ -25,7 +25,7 @@ def get_average_metrics_for_month(month: str):
 
     # Agrupar por departamento y calcular promedios de las métricas
     avg_metrics = month_data.groupby('department').agg({
-        'work_hours': 'mean',                
+        'overtime_hours': 'mean',                
         'task_response_time': 'mean',        
         'email_response_time': 'mean',       
         'tasks_completed': 'mean',           
@@ -34,13 +34,17 @@ def get_average_metrics_for_month(month: str):
         'time_off': 'mean'                   
     }).reset_index()
 
+    # Calcular el tiempo en horas dedicado a reuniones
+    avg_metrics['meetings_hours'] = avg_metrics['meetings_attended'] * 1.5  # Suponiendo 1.5 horas por reunión
+    
     # Redondear los resultados a 2 decimales
     avg_metrics = avg_metrics.round({
-        'work_hours': 2,
+        'overtime_hours ': 2,
         'task_response_time': 2,
         'email_response_time': 2,
         'tasks_completed': 2,
         'meetings_attended': 2,
+        'meetings_hours': 2,
         'collaboration_score': 2,
         'time_off': 2
     })

@@ -227,7 +227,7 @@ def update_metrics():
 def consent(user_id):
     user = User.query.get_or_404(user_id)
     existing_consent = Consent.query.filter_by(user_id=user.id).first()
-    available_metrics = [ "work_hours", 
+    available_metrics = [ "overtime_hours", 
         "activity_logs", 
         "productivity_scores",
         "keystroke_monitoring",  # Nueva métrica: Monitoreo de pulsaciones de teclas
@@ -259,3 +259,4 @@ def logout():
 
 if __name__ == '__main__':
     app.run(debug=True)
+    

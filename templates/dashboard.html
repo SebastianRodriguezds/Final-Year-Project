@@ -23,7 +23,7 @@
     <p>Number of Employees: {{ company.number_employees }}</p>
     <p>Subscription Plan: {{ company.type_subscription }}</p>
 
-    <h2>Department Metrics for February 2025 (Graphical)</h2>
+    <h2 id="metricsTitle">Department Metrics for February 2025 (Graphical)</h2>
     
     <!-- Canvas donde se dibujarán los gráficos -->
     <div class="chart-container">
@@ -40,11 +40,13 @@
         let metricsChart;
 
         // Inicializa el gráfico
-        function initializeChart(departmentMetrics) {
+        function initializeChart(departmentMetrics, selectedDate) {
             const departments = departmentMetrics.map(item => item.department);
-            const workHours = departmentMetrics.map(item => item.work_hours);
+            const overtimeHours = departmentMetrics.map(item => item.overtime_hours);
             const emailResponseTime = departmentMetrics.map(item => item.email_response_time);
             const taskCompletionTime = departmentMetrics.map(item => item.task_response_time);
+            const meetingsHours = departmentMetrics.map(item => item.meetings_hours || 0); // Asegúrate de que el valor exista
+            const timeOff = departmentMetrics.map(item => item.time_off || 0); // Asegúrate de que el valor exista
 
             if (metricsChart) {
                 metricsChart.destroy(); // Destruir el gráfico anterior
@@ -54,25 +56,43 @@
                 type: 'bar',
                 data: {
                     labels: departments,
-                    datasets: [{
-                        label: 'Average Work Hours (hours)',
-                        data: workHours,
+                    datasets: [
+                    {
+                        label: 'Average Overtime Hours (hours)',
+                        data: overtimeHours,
                         backgroundColor: 'rgba(75, 192, 192, 0.2)',
                         borderColor: 'rgba(75, 192, 192, 1)',
                         borderWidth: 1
-                    }, {
+                    },
+                    {
                         label: 'Average Email Response Time (hours)',
                         data: emailResponseTime,
                         backgroundColor: 'rgba(153, 102, 255, 0.2)',
                         borderColor: 'rgba(153, 102, 255, 1)',
                         borderWidth: 1
-                    }, {
+                    },
+                    {
                         label: 'Average Task Completion Time (hours)',
                         data: taskCompletionTime,
                         backgroundColor: 'rgba(255, 159, 64, 0.2)',
                         borderColor: 'rgba(255, 159, 64, 1)',
                         borderWidth: 1
-                    }]
+                    },
+                    {
+                        label: 'Average Meetings Hours (hours)',
+                        data: meetingsHours,
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Average Time Off (hours)',
+                        data: timeOff,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }
+                    ]
                 },
                 options: {
                     scales: {
@@ -82,38 +102,49 @@
                     }
                 }
             });
+
+            // Actualizar el título con el mes y año seleccionados
+            const [year, month] = selectedDate.split('-');
+            const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            const monthName = months[parseInt(month) - 1];
+            document.getElementById('metricsTitle').textContent = `Department Metrics for ${monthName} ${year} (Graphical)`;
         }
 
         // Event listener para el botón "Update Chart"
         document.getElementById('updateChartBtn').addEventListener('click', function() {
-    const selectedDate = document.getElementById('selected_date').value;
+            const selectedDate = document.getElementById('selected_date').value;
 
-    // Realizar la solicitud POST para obtener los nuevos datos del gráfico
-    fetch('/update_metrics', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-            'selected_date': selectedDate
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log("Datos recibidos del backend:", data);  // Verifica los datos aquí
-        if (data.length > 0) {
-            // Inicializa el gráfico con los nuevos datos
-            initializeChart(data);
-        } else {
-            alert("No hay datos disponibles para este mes.");
-        }
-    })
-    .catch(error => console.error('Error updating chart:', error));
-});
+            // Verificar que la fecha seleccionada no esté vacía
+            if (!selectedDate) {
+                alert('Please select a date.');
+                return;
+            }
 
+            // Realizar la solicitud POST para obtener los nuevos datos del gráfico
+            fetch('/update_metrics', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    'selected_date': selectedDate
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Datos recibidos del backend:", data);  // Verifica los datos aquí
+                if (data.length > 0) {
+                    // Inicializa el gráfico con los nuevos datos
+                    initializeChart(data, selectedDate);
+                } else {
+                    alert("No hay datos disponibles para este mes.");
+                }
+            })
+            .catch(error => console.error('Error updating chart:', error));
+        });
 
         // Inicializar el gráfico con los datos actuales
-        initializeChart({{ department_metrics | tojson }});
+        initializeChart({{ department_metrics | tojson }}, '2025-02');
     </script>
 
     <p>
