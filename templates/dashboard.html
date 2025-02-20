@@ -35,6 +35,14 @@
     <input type="month" id="selected_date" name="selected_date" value="2025-02" required>
     <button id="updateChartBtn">Update Chart</button>
 
+    <div class="button-container">
+        <form id="generateReportForm" action="{{ url_for('generate_report') }}" method="POST">
+            <!-- Campo oculto que enviará la fecha seleccionada -->
+            <input type="hidden" id="report_date" name="selected_date" value="2025-02">
+            <button type="submit" id="generateReportBtn">Generate Report</button>
+        </form>
+    </div>
+
     <script>
         const ctx = document.getElementById('metricsChart').getContext('2d');
         let metricsChart;
@@ -44,7 +52,7 @@
             const departments = departmentMetrics.map(item => item.department);
             const overtimeHours = departmentMetrics.map(item => item.overtime_hours);
             const emailResponseTime = departmentMetrics.map(item => item.email_response_time);
-            const taskCompletionTime = departmentMetrics.map(item => item.task_response_time);
+            const taskCompletionTime = departmentMetrics.map(item => item.task_completion_time);
             const meetingsHours = departmentMetrics.map(item => item.meetings_hours || 0); // Asegúrate de que el valor exista
             const timeOff = departmentMetrics.map(item => item.time_off || 0); // Asegúrate de que el valor exista
 
@@ -145,6 +153,15 @@
 
         // Inicializar el gráfico con los datos actuales
         initializeChart({{ department_metrics | tojson }}, '2025-02');
+
+
+        // Actualizar el valor del campo oculto con la fecha seleccionada
+        document.getElementById('generateReportBtn').addEventListener('click', function() {
+        const selectedDate = document.getElementById('selected_date').value;
+        console.log("Fecha seleccionada en el frontend:", selectedDate);  // Aquí vemos la fecha seleccionada en el frontend
+        
+        document.getElementById('report_date').value = selectedDate;
+    });
     </script>
 
     <p>

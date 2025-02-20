@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import re
 from data_analysis import get_average_metrics_for_month
 from datetime import datetime
+from process_metrics import check_metrics_against_rules
 
 
 app = Flask(__name__)
@@ -219,6 +220,24 @@ def update_metrics():
     department_metrics = avg_metrics.to_dict(orient='records')
     print(f"Acá están las métricas: {avg_metrics}")  # Verifica si las métricas están correctas
     return jsonify(department_metrics)  # Devolver como JSON
+
+@app.route('/generate_report', methods=['POST'])
+def generate_report():
+    selected_date = request.form['selected_date']
+
+    # Primero, obtenemos las métricas para el mes seleccionado
+    metrics = get_average_metrics_for_month(selected_date)
+    print(metrics)  # Esto te ayudará a ver las métricas en la terminal
+
+    # Luego, comprobamos si hay alertas para ese mes
+    alerts = check_metrics_against_rules(selected_date)
+
+    # Si hay alertas, las pasamos al template junto con las métricas
+    if alerts:
+        return render_template('report.html', metrics=metrics.to_dict(orient='records'), alerts=alerts, selected_date=selected_date)
+
+    # Si no hay alertas, igualmente pasamos las métricas
+    return render_template('report.html', metrics=metrics.to_dict(orient='records'), selected_date=selected_date, alert='No anomalies detected')
 
 
 

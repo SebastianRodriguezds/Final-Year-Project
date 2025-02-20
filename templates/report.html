@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Generated Report</title>
+    <link rel="stylesheet" href="../static/styles.css" />
+  </head>
+  <body>
+    <h1>Generated Report for {{ selected_date }}</h1>
+    <h3>Department Metrics</h3>
+
+    {% if metrics %}
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Department</th>
+            <th>Overtime Hours</th>
+            <th>Email Response Time</th>
+            <th>Task Completion Time</th>
+            <th>Meetings Hours</th>
+            <th>Time Off</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for metric in metrics %}
+          <tr>
+            <td>{{ metric['department'] }}</td>
+            <td>{{ metric['overtime_hours'] }}</td>
+            <td>{{ metric['task_completion_time'] }}</td>
+            <td>{{ metric['email_response_time'] }}</td>
+            <td>{{ metric['meetings_hours'] }}</td>
+            <td>{{ metric['time_off'] }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p>No metrics available for this date.</p>
+    {% endif %}
+
+    <!-- Si hay alertas, cada departamento tendrá su propio contenedor -->
+    {% if alerts %}
+    <h2>Performance Condition Summary by Department</h2>
+    {% for department, department_alerts in alerts.items() %}
+    <div class="department-alert-container">
+      <h3>{{ department }}</h3>
+      <ul class="alert-list">
+        {% for alert in department_alerts %}
+        <li>
+          {{ alert['alert'] }}<br />
+          Value: {{ alert['value'] }}<br />
+          Threshold: {{ alert['threshold'] }}<br />
+          Alert Type: {{ alert['alert_type'] }}
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endfor %}
+    {% else %}
+    <h2>No Anomalies Detected</h2>
+    {% endif %}
+
+    <p><a href="{{ url_for('index') }}">Back to home</a></p>
+  </body>
+</html>

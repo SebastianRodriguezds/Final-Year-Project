@@ -1,0 +1,27 @@
+department,metric,threshold,alert_type
+Finance,overtime_hours,20,High Motivation
+HR,overtime_hours,20,High Motivation
+IT,overtime_hours,20,High Motivation
+Marketing,overtime_hours,20,High Motivation
+Sales,overtime_hours,20,High Motivation
+Finance,meetings_hours,15,Burnout Risk
+HR,meetings_hours,15,Burnout Risk
+IT,meetings_hours,15,Burnout Risk
+Marketing,meetings_hours,15,Burnout Risk
+Sales,meetings_hours,15,Burnout Risk
+Finance,time_off,5,Low Motivation
+HR,time_off,5,Low Motivation
+IT,time_off,5,Low Motivation
+Marketing,time_off,5,Low Motivation
+Sales,time_off,5,Low Motivation
+Finance,task_completion_time,15,Low Productivity
+HR,task_completion_time,15,Low Productivity
+IT,task_completion_time,15,Low Productivity
+Marketing,task_completion_time,15,Low Productivity
+Sales,task_completion_time,15,Low Productivity
+Finance,email_response_time,4,Positive Engagement
+HR,email_response_time,4,Positive Engagement
+IT,email_response_time,4,Positive Engagement
+Marketing,email_response_time,4,Positive Engagement
+Sales,email_response_time,4,Positive Engagement
+
